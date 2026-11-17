@@ -22,8 +22,11 @@ import {
   CloudUpload,
   GraduationCap,
   MessageSquare,
+  Upload,
+  Loader2,
 } from 'lucide-react';
 import { useCmsData, ADMIN_EMAIL } from '../lib/useCmsData';
+import { uploadImageToCloudinary } from '../lib/cloudinary';
 import { UserAccount } from '../lib/cmsState';
 import {
   Notice,
@@ -112,6 +115,8 @@ export default function AdminControlPanel({
   const [editingGalleryItem, setEditingGalleryItem] = useState<GalleryItem | null>(null);
   const [isAddingGallery, setIsAddingGallery] = useState(false);
   const [confirmDeleteGalleryId, setConfirmDeleteGalleryId] = useState<string | null>(null);
+  const [isUploadingGalleryImage, setIsUploadingGalleryImage] = useState(false);
+  const [galleryUploadError, setGalleryUploadError] = useState<string | null>(null);
   const [galleryForm, setGalleryForm] = useState<Partial<GalleryItem>>({
     category: 'campus',
     date: 'Fall 2026',
@@ -303,8 +308,38 @@ export default function AdminControlPanel({
         showToast('New campus photo published to live gallery!');
       }
       setGalleryForm({ category: 'campus', date: 'Fall 2026' });
+      setGalleryUploadError(null);
     } catch (err: any) {
       showToast(err?.message || 'Error saving gallery item.');
+    }
+  };
+
+  const handleGalleryFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    setIsUploadingGalleryImage(true);
+    setGalleryUploadError(null);
+    try {
+      const result = await uploadImageToCloudinary(
+        file,
+        'ccn_university',
+        galleryForm.title || file.name
+      );
+      setGalleryForm((prev) => ({
+        ...prev,
+        imageUrl: result.url,
+        title: prev.title || file.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' '),
+      }));
+      showToast('Photo uploaded to Cloudinary CDN!');
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : 'Failed to upload image. Paste URL or local path.';
+      setGalleryUploadError(msg);
+      showToast(msg);
+    } finally {
+      setIsUploadingGalleryImage(false);
     }
   };
 
@@ -728,6 +763,7 @@ export default function AdminControlPanel({
                   onClick={() => {
                     setIsAddingGallery(true);
                     setEditingGalleryItem(null);
+                    setGalleryUploadError(null);
                     setGalleryForm({ category: 'campus', date: 'Fall 2026' });
                   }}
                   className="bg-[#163A2D] hover:bg-[#0D241C] text-[#FAD02C] px-3.5 py-1.5 font-bold flex items-center space-x-1.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 cursor-pointer border border-[#163A2D]"
@@ -801,18 +837,47 @@ export default function AdminControlPanel({
 
                   <div>
                     <label className="block text-[11px] font-bold text-[#163A2D] mb-1">
-                      Image Path or URL (Supports /assets/... or https://...) *
+                      Image Path, External URL, or Direct Upload (Supports /assets/..., https://..., or File Upload) *
                     </label>
-                    <input
-                      type="text"
-                      required
-                      value={galleryForm.imageUrl || ''}
-                      onChange={(e) =>
-                        setGalleryForm({ ...galleryForm, imageUrl: e.target.value })
-                      }
-                      placeholder="/assets/aistudio/... or https://..."
-                      className="w-full p-2 bg-[#FAF8F5] border border-[#D0E4DA] text-xs font-mono text-[#163A2D] focus:border-[#163A2D]"
-                    />
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <input
+                        type="text"
+                        required
+                        value={galleryForm.imageUrl || ''}
+                        onChange={(e) => {
+                          setGalleryUploadError(null);
+                          setGalleryForm({ ...galleryForm, imageUrl: e.target.value });
+                        }}
+                        placeholder="/assets/aistudio/... or https://res.cloudinary.com/..."
+                        className="flex-1 p-2 bg-[#FAF8F5] border border-[#D0E4DA] text-xs font-mono text-[#163A2D] focus:border-[#163A2D]"
+                      />
+                      <label
+                        className={`shrink-0 px-3.5 py-2 border border-[#163A2D] font-bold text-xs flex items-center justify-center space-x-1.5 transition-colors ${
+                          isUploadingGalleryImage
+                            ? 'bg-[#D0E4DA] text-[#163A2D] cursor-wait'
+                            : 'bg-[#FAF8F5] hover:bg-[#163A2D] text-[#163A2D] hover:text-[#FAD02C] cursor-pointer'
+                        }`}
+                      >
+                        {isUploadingGalleryImage ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Upload className="w-3.5 h-3.5" />
+                        )}
+                        <span>{isUploadingGalleryImage ? 'Uploading...' : 'Upload Photo'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          disabled={isUploadingGalleryImage}
+                          onChange={handleGalleryFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                    {galleryUploadError && (
+                      <p className="mt-1.5 text-[11px] font-semibold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1">
+                        {galleryUploadError}
+                      </p>
+                    )}
                   </div>
 
                   <div>

@@ -5,14 +5,19 @@ import compression from 'compression';
 import { v2 as cloudinary } from 'cloudinary';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: ['.env.local', '.env'] });
 
-// Configure Cloudinary solely from environment variables (never hardcode secrets)
-const cloudName = process.env.CLOUDINARY_CLOUD_NAME || '';
+// Configure Cloudinary & server-side Gemini readiness solely from environment variables (never hardcode secrets)
+const cloudName =
+  process.env.CLOUDINARY_CLOUD_NAME || process.env.VITE_CLOUDINARY_CLOUD_NAME || '';
 const apiKey = process.env.CLOUDINARY_API_KEY || '';
 const apiSecret = process.env.CLOUDINARY_API_SECRET || '';
+const geminiApiKey = process.env.GEMINI_API_KEY || process.env.API_KEY || '';
 
-if (cloudName && apiKey && apiSecret) {
+const isCloudinaryConfigured = Boolean(cloudName && apiKey && apiSecret);
+const isGeminiConfigured = Boolean(geminiApiKey);
+
+if (isCloudinaryConfigured) {
   cloudinary.config({
     cloud_name: cloudName,
     api_key: apiKey,
@@ -76,41 +81,55 @@ async function startServer() {
       '/api/health',
       '/__aistudio_internal_control_plane/dev/status',
     ],
-    (req, res) => {
-      res.json({ status: 'ok', ready: true, timestamp: new Date().toISOString() });
+    (_req, res) => {
+      res.json({
+        status: 'ok',
+        ready: true,
+        services: {
+          cloudinaryConfigured: isCloudinaryConfigured,
+          geminiConfigured: isGeminiConfigured,
+        },
+        timestamp: new Date().toISOString(),
+      });
     }
   );
 
-  app.get('/api/cloudinary-config', (req, res) => {
+  app.get('/api/cloudinary-config', (_req, res) => {
     res.json({
       status: 'ok',
-      cloudName: cloudName,
-      isConfigured: !!(cloudName && apiKey && apiSecret),
+      cloudName,
+      isConfigured: isCloudinaryConfigured,
     });
   });
 
   // API Route: Cloudinary Image Upload
   app.post('/api/upload', async (req, res) => {
     try {
-      if (!cloudName || !apiKey || !apiSecret) {
+      if (!isCloudinaryConfigured) {
         return res.status(503).json({
           error: 'Media upload service is not configured in this environment.',
         });
       }
 
-      const { image, folder = 'ccn_university' } = req.body;
+      const { image, folder, title } = req.body ?? {};
+      const targetFolder =
+        typeof folder === 'string' && folder.trim() ? folder.trim() : 'ccn_university';
 
-      if (!image) {
-        return res.status(400).json({ error: 'No image data provided' });
+      if (typeof image !== 'string' || !image.trim()) {
+        return res.status(400).json({ error: 'No valid image data provided' });
       }
 
-      const result = await cloudinary.uploader.upload(image, {
-        folder: folder,
-        resource_type: 'auto',
-        tags: ['ccn_university', folder],
-      });
+      const sanitizedTitle =
+        typeof title === 'string' && title.trim()
+          ? title.trim().replace(/[|=]/g, ' ')
+          : undefined;
 
-      console.log(`✅ Upload successful! URL: ${result.secure_url}`);
+      const result = await cloudinary.uploader.upload(image, {
+        folder: targetFolder,
+        resource_type: 'auto',
+        tags: ['ccn_university', targetFolder],
+        ...(sanitizedTitle ? { context: `caption=${sanitizedTitle}` } : {}),
+      });
 
       return res.json({
         success: true,
@@ -121,16 +140,17 @@ async function startServer() {
         height: result.height,
         createdAt: result.created_at,
       });
-    } catch (error: any) {
-      console.error('❌ Cloudinary upload error:', error);
+    } catch (error: unknown) {
+      const details = error instanceof Error ? error.message : String(error);
+      console.error('Cloudinary upload error:', details);
       return res.status(500).json({
         error: 'Cloudinary upload failed',
-        details: error?.message || String(error),
+        details,
       });
     }
   });
 
-  let viteServer: any = null;
+  let viteServer: { close: () => Promise<void>; middlewares: express.RequestHandler } | null = null;
 
   // Vite middleware setup (Dynamic import for development mode to avoid ERR_REQUIRE_ESM in production)
   if (process.env.NODE_ENV !== 'production') {
