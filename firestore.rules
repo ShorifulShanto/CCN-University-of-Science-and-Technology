@@ -1,0 +1,292 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Default-Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Core Reusable Primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 2 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedEmail() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isBootstrapAdmin() {
+      return isVerifiedEmail() && request.auth.token.email == 'md.si.shanto001@gmail.com';
+    }
+
+    function isAdmin() {
+      return isBootstrapAdmin() || (
+        isVerifiedEmail() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isOptionalString(data, key, maxLen) {
+      return !(key in data) || (data[key] is string && data[key].size() <= maxLen);
+    }
+
+    function isOptionalBool(data, key) {
+      return !(key in data) || (data[key] is bool);
+    }
+
+    // Validation Blueprint: Notice
+    function isValidNotice(data) {
+      return data.keys().hasAll(['id', 'title', 'category', 'publishDate', 'content', 'important', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'title', 'category', 'publishDate', 'content', 'important', 'pdfUrl', 'attachmentName', 'createdAt', 'updatedAt'])
+        && isValidId(data.id)
+        && data.title is string && data.title.size() >= 3 && data.title.size() <= 240
+        && data.category in ['admission', 'academic', 'examination', 'administrative', 'general']
+        && data.publishDate is string && data.publishDate.size() >= 3 && data.publishDate.size() <= 60
+        && data.content is string && data.content.size() >= 3 && data.content.size() <= 5000
+        && data.important is bool
+        && isOptionalString(data, 'pdfUrl', 1000)
+        && isOptionalString(data, 'attachmentName', 200)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // Validation Blueprint: GalleryItem
+    function isValidGalleryItem(data) {
+      return data.keys().hasAll(['id', 'title', 'category', 'imageUrl', 'caption', 'date', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'title', 'category', 'imageUrl', 'caption', 'date', 'createdAt', 'updatedAt'])
+        && isValidId(data.id)
+        && data.title is string && data.title.size() >= 2 && data.title.size() <= 200
+        && data.category in ['campus', 'academic', 'events', 'seminar', 'sports', 'cultural', 'international', 'student_life']
+        && data.imageUrl is string && data.imageUrl.size() >= 3 && data.imageUrl.size() <= 1000
+        && data.caption is string && data.caption.size() <= 1000
+        && data.date is string && data.date.size() <= 60
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // Validation Blueprint: PortalUser
+    function isValidPortalUser(data) {
+      return data.keys().hasAll(['id', 'name', 'email', 'role', 'category', 'department', 'password', 'status', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'name', 'email', 'role', 'category', 'department', 'designation', 'password', 'status', 'createdAt', 'lastLogin', 'isAdmin', 'updatedAt'])
+        && isValidId(data.id)
+        && data.name is string && data.name.size() >= 2 && data.name.size() <= 150
+        && data.email is string && data.email.size() >= 5 && data.email.size() <= 150
+        && data.role in ['student', 'guardian', 'faculty', 'hod', 'exam_controller', 'admission_officer', 'accounts', 'officer', 'admin']
+        && data.category in ['student', 'teacher']
+        && data.department is string && data.department.size() <= 150
+        && isOptionalString(data, 'designation', 150)
+        && data.password is string && data.password.size() >= 4 && data.password.size() <= 128
+        && data.status in ['Active', 'Suspended', 'Pending Approval']
+        && data.createdAt is string && data.createdAt.size() <= 80
+        && isOptionalString(data, 'lastLogin', 80)
+        && isOptionalBool(data, 'isAdmin')
+        && data.updatedAt is timestamp;
+    }
+
+    // Validation Blueprint: AuditLog
+    function isValidAuditLog(data) {
+      return data.keys().hasAll(['id', 'userId', 'userName', 'email', 'role', 'category', 'timestamp', 'status', 'ipDevice', 'createdAt'])
+        && data.keys().hasOnly(['id', 'userId', 'userName', 'email', 'role', 'category', 'timestamp', 'status', 'ipDevice', 'createdAt'])
+        && isValidId(data.id)
+        && data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128
+        && data.userName is string && data.userName.size() >= 1 && data.userName.size() <= 150
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 150
+        && data.role is string && data.role.size() <= 50
+        && data.category is string && data.category.size() <= 50
+        && data.timestamp is string && data.timestamp.size() <= 80
+        && data.status in ['Success', 'Failed (Wrong Password)', 'Failed (Suspended)']
+        && data.ipDevice is string && data.ipDevice.size() <= 200
+        && data.createdAt is timestamp;
+    }
+
+    // Validation Blueprint: AdmissionApplication
+    function isValidAdmission(data) {
+      return data.keys().hasAll(['id', 'trackingNumber', 'applicantName', 'fatherName', 'motherName', 'email', 'phone', 'programId', 'sscGpa', 'hscGpa', 'address', 'status', 'submittedAt', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'trackingNumber', 'applicantName', 'fatherName', 'motherName', 'dateOfBirth', 'gender', 'email', 'phone', 'programId', 'programName', 'semester', 'shift', 'sscRoll', 'sscBoard', 'sscGpa', 'sscYear', 'hscRoll', 'hscBoard', 'hscGpa', 'hscYear', 'address', 'guardianPhone', 'quotaCategory', 'submittedAt', 'status', 'createdAt', 'updatedAt'])
+        && isValidId(data.id)
+        && data.trackingNumber is string && data.trackingNumber.size() >= 4 && data.trackingNumber.size() <= 64
+        && data.applicantName is string && data.applicantName.size() >= 2 && data.applicantName.size() <= 150
+        && data.fatherName is string && data.fatherName.size() >= 2 && data.fatherName.size() <= 150
+        && data.motherName is string && data.motherName.size() >= 2 && data.motherName.size() <= 150
+        && isOptionalString(data, 'dateOfBirth', 40)
+        && isOptionalString(data, 'gender', 20)
+        && data.email is string && data.email.size() >= 5 && data.email.size() <= 150
+        && data.phone is string && data.phone.size() >= 6 && data.phone.size() <= 40
+        && data.programId is string && data.programId.size() >= 2 && data.programId.size() <= 100
+        && isOptionalString(data, 'programName', 200)
+        && isOptionalString(data, 'semester', 60)
+        && isOptionalString(data, 'shift', 40)
+        && isOptionalString(data, 'sscRoll', 40)
+        && isOptionalString(data, 'sscBoard', 60)
+        && data.sscGpa is string && data.sscGpa.size() >= 1 && data.sscGpa.size() <= 20
+        && isOptionalString(data, 'sscYear', 20)
+        && isOptionalString(data, 'hscRoll', 40)
+        && isOptionalString(data, 'hscBoard', 60)
+        && data.hscGpa is string && data.hscGpa.size() >= 1 && data.hscGpa.size() <= 20
+        && isOptionalString(data, 'hscYear', 20)
+        && data.address is string && data.address.size() >= 3 && data.address.size() <= 400
+        && isOptionalString(data, 'guardianPhone', 40)
+        && isOptionalString(data, 'quotaCategory', 100)
+        && data.submittedAt is string && data.submittedAt.size() <= 80
+        && data.status in ['Received', 'Under Review', 'Test Scheduled', 'Admitted', 'Waitlisted']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // Validation Blueprint: ContactMessage
+    function isValidContact(data) {
+      return data.keys().hasAll(['id', 'name', 'email', 'subject', 'message', 'status', 'submittedAt', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'name', 'email', 'phone', 'subject', 'message', 'status', 'submittedAt', 'createdAt', 'updatedAt'])
+        && isValidId(data.id)
+        && data.name is string && data.name.size() >= 2 && data.name.size() <= 150
+        && data.email is string && data.email.size() >= 5 && data.email.size() <= 150
+        && isOptionalString(data, 'phone', 40)
+        && data.subject is string && data.subject.size() >= 2 && data.subject.size() <= 150
+        && data.message is string && data.message.size() >= 3 && data.message.size() <= 3000
+        && data.status in ['New', 'In Progress', 'Resolved']
+        && data.submittedAt is string && data.submittedAt.size() <= 80
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // Validation Blueprint: CmsMeta
+    function isValidCmsMeta(data) {
+      return data.keys().hasAll(['seeded', 'updatedAt'])
+        && data.keys().hasOnly(['seeded', 'updatedAt'])
+        && data.seeded is bool
+        && data.updatedAt is timestamp;
+    }
+
+    // 1. Notices Collection (Publicly readable circulars; Admin write)
+    match /notices/{noticeId} {
+      allow get: if isValidId(noticeId);
+      allow list: if true;
+      allow create: if isAdmin() && isValidId(noticeId) && isValidNotice(incoming())
+        && incoming().id == noticeId
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidNotice(incoming()) && isAdmin() && isValidId(noticeId)
+        && incoming().id == existing().id
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'category', 'publishDate', 'content', 'important', 'pdfUrl', 'attachmentName', 'updatedAt']);
+      allow delete: if isAdmin() && isValidId(noticeId);
+    }
+
+    // 2. Gallery Collection (Publicly readable photos; Admin write)
+    match /gallery/{galleryId} {
+      allow get: if isValidId(galleryId);
+      allow list: if true;
+      allow create: if isAdmin() && isValidId(galleryId) && isValidGalleryItem(incoming())
+        && incoming().id == galleryId
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidGalleryItem(incoming()) && isAdmin() && isValidId(galleryId)
+        && incoming().id == existing().id
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'category', 'imageUrl', 'caption', 'date', 'updatedAt']);
+      allow delete: if isAdmin() && isValidId(galleryId);
+    }
+
+    // 3. Portal Users Collection (Strict PII & password isolation: Admin or own verified email)
+    match /portalUsers/{userId} {
+      allow get: if isValidId(userId) && (isAdmin() || (isVerifiedEmail() && existing().email == request.auth.token.email));
+      allow list: if isBootstrapAdmin() || (isVerifiedEmail() && existing().email == request.auth.token.email);
+      allow create: if isAdmin() && isValidId(userId) && isValidPortalUser(incoming())
+        && incoming().id == userId
+        && incoming().updatedAt == request.time;
+      allow update: if isValidPortalUser(incoming()) && isValidId(userId) && (
+        (
+          isAdmin()
+          && incoming().id == existing().id
+          && incoming().createdAt == existing().createdAt
+          && incoming().updatedAt == request.time
+          && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'email', 'role', 'category', 'department', 'designation', 'password', 'status', 'lastLogin', 'isAdmin', 'updatedAt'])
+        ) || (
+          isVerifiedEmail()
+          && existing().email == request.auth.token.email
+          && incoming().id == existing().id
+          && incoming().createdAt == existing().createdAt
+          && incoming().role == existing().role
+          && incoming().status == existing().status
+          && incoming().updatedAt == request.time
+          && incoming().diff(existing()).affectedKeys().hasOnly(['password', 'lastLogin', 'updatedAt'])
+        )
+      );
+      allow delete: if isAdmin() && isValidId(userId);
+    }
+
+    // 4. Audit Logs Collection (Admin only)
+    match /auditLogs/{logId} {
+      allow get: if isAdmin() && isValidId(logId);
+      allow list: if isBootstrapAdmin();
+      allow create: if isAdmin() && isValidId(logId) && isValidAuditLog(incoming())
+        && incoming().id == logId
+        && incoming().createdAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // 5. Admissions Collection (Public applicant intake create; Admin-only read/update/delete)
+    match /admissions/{admissionId} {
+      allow get: if isAdmin() && isValidId(admissionId);
+      allow list: if isBootstrapAdmin();
+      allow create: if isValidId(admissionId) && isValidAdmission(incoming())
+        && incoming().id == admissionId
+        && incoming().status == 'Received'
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidAdmission(incoming()) && isAdmin() && isValidId(admissionId)
+        && incoming().id == existing().id
+        && incoming().trackingNumber == existing().trackingNumber
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+      allow delete: if isAdmin() && isValidId(admissionId);
+    }
+
+    // 6. Contacts Collection (Public inquiry intake create; Admin-only read/update/delete)
+    match /contacts/{contactId} {
+      allow get: if isAdmin() && isValidId(contactId);
+      allow list: if isBootstrapAdmin();
+      allow create: if isValidId(contactId) && isValidContact(incoming())
+        && incoming().id == contactId
+        && incoming().status == 'New'
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidContact(incoming()) && isAdmin() && isValidId(contactId)
+        && incoming().id == existing().id
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+      allow delete: if isAdmin() && isValidId(contactId);
+    }
+
+    // 7. CMS Metadata Flag
+    match /cmsMeta/{metaId} {
+      allow get: if isValidId(metaId);
+      allow list: if false;
+      allow create, update: if isAdmin() && isValidId(metaId) && isValidCmsMeta(incoming())
+        && incoming().updatedAt == request.time;
+      allow delete: if false;
+    }
+
+    // 8. Verified Admin Registry (Read own doc only)
+    match /admins/{adminUid} {
+      allow get: if isVerifiedEmail() && request.auth.uid == adminUid;
+      allow list, create, update, delete: if false;
+    }
+  }
+}

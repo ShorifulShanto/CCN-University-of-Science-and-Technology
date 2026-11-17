@@ -1,0 +1,8 @@
+{
+  "name": "CCN University of Science & Technology",
+  "description": "Official, modern, high-fidelity responsive university website and academic portal for CCN University of Science & Technology (CCNUST), Kotbari, Cumilla, Bangladesh.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

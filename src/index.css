@@ -1,0 +1,2336 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* 🌲 Deep Forest Green — Primary Institutional Swiss UI Elements & Anchors */
+  --color-forest: #163A2D;
+  --color-forest-dark: #0D241C;
+  --color-forest-light: #21513F;
+  --color-forest-subtle: #306550;
+
+  /* 🍃 Fresh Sage Green (Pastel Plate) — Environmental & Secondary Brand Color (Mountain & Trees) */
+  --color-sage: #4E7D68;
+  --color-sage-light: #EAF2ED;
+  --color-sage-muted: #F3F8F5;
+  --color-sage-dark: #2A5644;
+  --color-sage-border: #D0E4DA;
+
+  /* 🌟 Warm Yellow / Gold (Pastel Plate) — Sparingly for CTAs, Signal Badges & Highlights */
+  --color-gold: #FAD02C;
+  --color-gold-hover: #F0C21A;
+  --color-gold-light: #FEFCE8;
+  --color-gold-dark: #7A4E05;
+
+  --color-yellow: #FAD02C;
+  --color-yellow-pastel: #FEF08A;
+  --color-yellow-light: #FEFCE8;
+  --color-yellow-dark: #7A4E05;
+
+  /* 🌿 Soft Campus Sage Surface — 5% Green Tint Light Mode Canvas */
+  --color-cream: #F2F7F4;
+  --color-cream-card: #FAFDFB;
+  --color-cream-muted: #E8F1EB;
+  --color-cream-border: #D0E4DA;
+
+  /* ⚓ Small Amount of Deep Navy — Structural Contrast Tone */
+  --color-navy: #0E1C2B;
+  --color-navy-dark: #08121D;
+  --color-navy-light: #182C42;
+
+  /* Legacy aliases for backward compatibility */
+  --color-ccn-navy: #0E1C2B;
+  --color-ccn-navy-dark: #08121D;
+  --color-ccn-navy-light: #182C42;
+  --color-ccn-gold: #FAD02C;
+  --color-ccn-gold-light: #FEFCE8;
+  --color-ccn-gold-dark: #7A4E05;
+  --color-ccn-crimson: #163A2D;
+  --color-ccn-slate: #163A2D;
+  --color-ccn-surface: #F2F7F4;
+  --color-ccn-card: #FAFDFB;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color: #102B21;
+    background-color: #F2F7F4;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background-color: #F2F7F4;
+    color: #102B21;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  section[id], [id] {
+    scroll-margin-top: 5.5rem;
+  }
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* GPU acceleration & smooth performance primitives */
+.gpu-smooth {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+/* Smooth cubic bezier curve for interactive controls */
+button, a, input, select, textarea {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ========================================================
+   SWISS INTERNATIONAL STYLE TEXTURES & GRID PATTERNS
+   ======================================================== */
+
+/* 1. Subtle 24px structural grid lines */
+.swiss-grid-pattern {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(13, 59, 46, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(13, 59, 46, 0.05) 1px, transparent 1px);
+}
+
+.swiss-grid-pattern-dark {
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+}
+
+/* 2. 16px Dot Matrix pattern */
+.swiss-dots {
+  background-image: radial-gradient(rgba(13, 59, 46, 0.12) 1.2px, transparent 1.2px);
+  background-size: 16px 16px;
+}
+
+.swiss-dots-dark {
+  background-image: radial-gradient(rgba(229, 169, 16, 0.25) 1.2px, transparent 1.2px);
+  background-size: 16px 16px;
+}
+
+/* 3. 45-degree Architectural Diagonal Lines */
+.swiss-diagonal {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(13, 59, 46, 0.04),
+    rgba(13, 59, 46, 0.04) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+}
+
+/* 4. Subtle Noise Texture Overlay */
+.swiss-noise {
+  background-color: #FAFAF7;
+}
+
+/* 5. Smooth Swiss Animated Moving Gradient */
+@keyframes swissGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.swiss-gradient-animated {
+  background-size: 200% 200%;
+  animation: swissGradientFlow 10s ease infinite;
+}
+
+/* Swiss typography & button utilities */
+.swiss-section-number {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #854D0E;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.swiss-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background-color: #EFF6F2;
+  color: #163A2D;
+  border: 1px solid #D0E4DA;
+  border-radius: 2px;
+}
+
+.btn-swiss-primary {
+  background-color: #163A2D;
+  color: #FFFFFF;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.625rem;
+  border-radius: 0px;
+  border: 2px solid #163A2D;
+  box-shadow: none;
+  transition: all 0.15s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-swiss-primary:hover {
+  background-color: #FAD02C;
+  border-color: #FAD02C;
+  color: #0D241C;
+}
+
+.btn-swiss-secondary {
+  background-color: transparent;
+  color: #163A2D;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.625rem;
+  border-radius: 0px;
+  border: 2px solid #163A2D;
+  transition: all 0.15s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-swiss-secondary:hover {
+  background-color: #163A2D;
+  border-color: #163A2D;
+  color: #FFFFFF;
+}
+
+.btn-swiss-gold {
+  background-color: #FAD02C;
+  color: #0D241C;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.625rem;
+  border-radius: 0px;
+  border: 2px solid #FAD02C;
+  box-shadow: none;
+  transition: all 0.15s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-swiss-gold:hover {
+  background-color: #163A2D;
+  border-color: #163A2D;
+  color: #FFFFFF;
+}
+
+/* Backward compatibility classes */
+.institutional-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background-color: #EAF2ED;
+  color: #163A2D;
+  border: 1px solid #D0E4DA;
+  border-radius: 2px;
+}
+
+.btn-institutional-primary {
+  background-color: #264E41;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #264E41;
+  transition: all 0.2s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-institutional-primary:hover {
+  background-color: #D97706;
+  border-color: #D97706;
+  color: #FFFFFF;
+}
+
+.btn-institutional-gold {
+  background-color: #D97706;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #D97706;
+  transition: all 0.2s ease-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-institutional-gold:hover {
+  background-color: #B45309;
+  border-color: #B45309;
+  color: #FFFFFF;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94A3B8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D97706;
+}
+
+/* Cinematic Hero Animations */
+@keyframes cloudDriftSlow {
+  0% {
+    transform: translateX(-4%) translateY(0);
+  }
+  50% {
+    transform: translateX(4%) translateY(-3px);
+  }
+  100% {
+    transform: translateX(-4%) translateY(0);
+  }
+}
+
+@keyframes birdGlideOne {
+  0% {
+    transform: translate(-80px, 35px) scale(0.65);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.8;
+  }
+  88% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(105vw, -25px) scale(0.75);
+    opacity: 0;
+  }
+}
+
+@keyframes birdGlideTwo {
+  0% {
+    transform: translate(-100px, 70px) scale(0.5);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.7;
+  }
+  82% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(105vw, 15px) scale(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes goldenPetalFloat1 {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(140px, -190px) rotate(360deg) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes goldenPetalFloat2 {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.7);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-120px, -230px) rotate(-280deg) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes goldenPetalFloat3 {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.75);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(160px, -140px) rotate(220deg) scale(0.95);
+    opacity: 0;
+  }
+}
+
+@keyframes sunbeamPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes gentleSway {
+  0%, 100% {
+    transform: rotate(-1.2deg) translateY(0);
+  }
+  50% {
+    transform: rotate(1.2deg) translateY(-2px);
+  }
+}
+
+@keyframes scrollIndicatorBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(7px);
+  }
+  60% {
+    transform: translateY(3.5px);
+  }
+}
+
+.animate-cloud-drift {
+  animation: cloudDriftSlow 42s ease-in-out infinite;
+}
+
+.animate-bird-glide-1 {
+  animation: birdGlideOne 28s linear infinite;
+}
+
+.animate-bird-glide-2 {
+  animation: birdGlideTwo 36s linear infinite;
+  animation-delay: 11s;
+}
+
+.animate-petal-1 {
+  animation: goldenPetalFloat1 10s ease-in-out infinite;
+}
+
+.animate-petal-2 {
+  animation: goldenPetalFloat2 13s ease-in-out infinite;
+  animation-delay: 3.5s;
+}
+
+.animate-petal-3 {
+  animation: goldenPetalFloat3 11s ease-in-out infinite;
+  animation-delay: 6s;
+}
+
+.animate-sunbeam {
+  animation: sunbeamPulse 9s ease-in-out infinite;
+}
+
+.animate-gentle-sway {
+  animation: gentleSway 7s ease-in-out infinite;
+}
+
+.animate-scroll-bounce {
+  animation: scrollIndicatorBounce 2.2s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cloud-drift,
+  .animate-bird-glide-1,
+  .animate-bird-glide-2,
+  .animate-petal-1,
+  .animate-petal-2,
+  .animate-petal-3,
+  .animate-sunbeam,
+  .animate-gentle-sway,
+  .animate-scroll-bounce {
+    animation: none !important;
+  }
+}
+
+/* ========================================================
+   UIVERSE.IO SOCIAL TOOLTIP BUTTONS WRAPPER
+   From Uiverse.io by david-mohseni (Integrated for CCNUST)
+   ======================================================== */
+.uiverse-wrapper {
+  display: inline-flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-sans);
+  align-items: center;
+  gap: 12px;
+}
+
+.uiverse-wrapper .icon {
+  position: relative;
+  background: #ffffff;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 17px;
+  color: #0b192c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+}
+
+.uiverse-wrapper .tooltip {
+  position: absolute;
+  top: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: #ffffff;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 50;
+}
+
+.uiverse-wrapper .tooltip::before {
+  position: absolute;
+  content: "";
+  height: 8px;
+  width: 8px;
+  background: #ffffff;
+  bottom: -4px;
+  left: 50%;
+  transform: translate(-50%) rotate(45deg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.uiverse-wrapper .icon:hover .tooltip {
+  top: -42px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.uiverse-wrapper .icon:hover span,
+.uiverse-wrapper .icon:hover .tooltip {
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+}
+
+.uiverse-wrapper .facebook:hover,
+.uiverse-wrapper .facebook:hover .tooltip,
+.uiverse-wrapper .facebook:hover .tooltip::before {
+  background: #1877f2;
+  color: #ffffff;
+}
+
+.uiverse-wrapper .twitter:hover,
+.uiverse-wrapper .twitter:hover .tooltip,
+.uiverse-wrapper .twitter:hover .tooltip::before {
+  background: #1da1f2;
+  color: #ffffff;
+}
+
+.uiverse-wrapper .instagram:hover,
+.uiverse-wrapper .instagram:hover .tooltip,
+.uiverse-wrapper .instagram:hover .tooltip::before {
+  background: #e4405f;
+  color: #ffffff;
+}
+
+.uiverse-wrapper .linkedin:hover,
+.uiverse-wrapper .linkedin:hover .tooltip,
+.uiverse-wrapper .linkedin:hover .tooltip::before {
+  background: #0a66c2;
+  color: #ffffff;
+}
+
+.uiverse-wrapper .youtube:hover,
+.uiverse-wrapper .youtube:hover .tooltip,
+.uiverse-wrapper .youtube:hover .tooltip::before {
+  background: #ff0000;
+  color: #ffffff;
+}
+
+/* ========================================================
+   EXECUTIVE FACULTY PROFILE CARD (Refined Academic Styling)
+   ======================================================== */
+.card-profile {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  width: 380px;
+  max-width: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prof-photo {
+  height: 160px;
+  background: linear-gradient(135deg, #1B3C31 0%, #285446 100%);
+  border-bottom: 1px solid #DCEBE3;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.prof-photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0px,
+    transparent 8px,
+    rgba(255, 255, 255, 0.03) 8px,
+    rgba(255, 255, 255, 0.03) 10px
+  );
+}
+
+.prof-photo-num {
+  font-family: var(--font-sans);
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 0.85;
+  color: rgba(255, 255, 255, 0.08);
+  position: absolute;
+  right: 8px;
+  bottom: 0px;
+  letter-spacing: -0.02em;
+  pointer-events: none;
+}
+
+.prof-avatar {
+  width: 72px;
+  height: 72px;
+  background: #1B3C31;
+  border: 3px solid #FFFFFF;
+  border-radius: 12px;
+  margin-left: 20px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #FEF08A;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(27, 60, 49, 0.15);
+}
+
+.prof-status-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  background: #FEFCE8;
+  color: #854D0E;
+  border: 1px solid #FEF08A;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  text-transform: uppercase;
+}
+
+.prof-body {
+  padding: 18px 20px 0;
+}
+
+.prof-handle {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #854D0E;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.prof-name {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: #17342B;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+
+.prof-bio {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #4A6E60;
+  border-left: 3px solid #FDE047;
+  padding-left: 12px;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.prof-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid #DCEBE3;
+}
+
+.pstat {
+  padding: 12px 10px;
+  border-right: 1px solid #DCEBE3;
+  text-align: center;
+  background: #F8FAF8;
+}
+
+.pstat:last-child {
+  border-right: none;
+}
+
+.pstat .psv {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: #17342B;
+  display: block;
+}
+
+.pstat .psl {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #5A8A78;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 2px;
+}
+
+.prof-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: #264E41;
+  color: #FFFFFF;
+  border: none;
+  border-top: 1px solid #DCEBE3;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.prof-btn:hover {
+  background: #FEF08A;
+  color: #17342B;
+}
+
+/* ========================================================
+   CCN UNIVERSITY – 9-LAYER ANIMATION ELEMENTS SYSTEM
+   Speed-calibrated, GPU-accelerated parallax & ambient layers
+   ======================================================== */
+
+/* Layer 1: Clouds & Sky (2% - 5% speed, slowest) */
+@keyframes cloud-drift-slow {
+  0% {
+    transform: translate3d(-10%, 0, 0);
+  }
+  50% {
+    transform: translate3d(5%, -4px, 0);
+  }
+  100% {
+    transform: translate3d(-10%, 0, 0);
+  }
+}
+
+@keyframes cloud-drift-alt {
+  0% {
+    transform: translate3d(8%, 0, 0);
+  }
+  50% {
+    transform: translate3d(-8%, 5px, 0);
+  }
+  100% {
+    transform: translate3d(8%, 0, 0);
+  }
+}
+
+/* Layer 3: Fog & Mist (10% - 15% speed, horizontal drift) */
+@keyframes fog-drift-left {
+  0% {
+    transform: translate3d(-15%, 0, 0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(15%, 0, 0);
+    opacity: 0.65;
+  }
+  100% {
+    transform: translate3d(-15%, 0, 0);
+    opacity: 0.35;
+  }
+}
+
+@keyframes fog-drift-right {
+  0% {
+    transform: translate3d(20%, 0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate3d(-10%, 0, 0);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(20%, 0, 0);
+    opacity: 0.45;
+  }
+}
+
+/* Layer 5: Trees & Foliage (20% - 30% speed, gentle wind sway) */
+@keyframes tree-sway-gentle {
+  0%, 100% {
+    transform: rotate(0deg) skewX(0deg);
+  }
+  33% {
+    transform: rotate(1.2deg) skewX(0.8deg);
+  }
+  66% {
+    transform: rotate(-0.9deg) skewX(-0.6deg);
+  }
+}
+
+@keyframes tree-sway-alt {
+  0%, 100% {
+    transform: rotate(0deg) skewX(0deg);
+  }
+  40% {
+    transform: rotate(-1.4deg) skewX(-1deg);
+  }
+  75% {
+    transform: rotate(1deg) skewX(0.7deg);
+  }
+}
+
+/* Layer 6: Flower Field Breeze (30% - 40% speed, foreground movement) */
+@keyframes flower-field-breeze {
+  0%, 100% {
+    transform: rotate(0deg) translate3d(0, 0, 0);
+  }
+  25% {
+    transform: rotate(1.8deg) translate3d(3px, -1px, 0);
+  }
+  75% {
+    transform: rotate(-1.5deg) translate3d(-2px, 1px, 0);
+  }
+}
+
+@keyframes flower-head-bob {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(3deg) scale(1.03);
+  }
+}
+
+/* Layer 7: Flower Petals Floating (40% - 60% speed) */
+@keyframes petal-fall-1 {
+  0% {
+    transform: translateY(-20px) rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.75;
+  }
+  90% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateY(105vh) rotate(380deg) translateX(80px);
+    opacity: 0;
+  }
+}
+
+@keyframes petal-fall-2 {
+  0% {
+    transform: translateY(-20px) rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(105vh) rotate(-320deg) translateX(-90px);
+    opacity: 0;
+  }
+}
+
+@keyframes petal-sway-up {
+  0% {
+    transform: translate3d(0, 20px, 0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(60px, -120px, 0) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+/* Layer 8: Birds (10% - 20% speed, distant slow flight) */
+@keyframes birds-fly-across {
+  0% {
+    transform: translate3d(-120px, 10px, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(calc(100vw + 120px), -25px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes bird-wing-flap {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.55);
+  }
+}
+
+/* Layer 9: Sunlight Rays (5% - 10% speed, subtle light shift) */
+@keyframes sunbeam-pulse {
+  0%, 100% {
+    opacity: 0.65;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.06) rotate(1.5deg);
+  }
+}
+
+@keyframes sun-rays-sweep {
+  0%, 100% {
+    transform: rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: rotate(4deg);
+    opacity: 0.85;
+  }
+}
+
+/* Helper Animation Classes */
+.animate-cloud-slow {
+  animation: cloud-drift-slow 36s ease-in-out infinite;
+}
+
+.animate-cloud-alt {
+  animation: cloud-drift-alt 44s ease-in-out infinite;
+}
+
+.animate-fog-left {
+  animation: fog-drift-left 24s ease-in-out infinite;
+}
+
+.animate-fog-right {
+  animation: fog-drift-right 28s ease-in-out infinite;
+}
+
+.animate-tree-sway {
+  animation: tree-sway-gentle 6s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-tree-sway-alt {
+  animation: tree-sway-alt 8s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-flower-breeze {
+  animation: flower-field-breeze 4.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+.animate-flower-breeze-alt {
+  animation: flower-field-breeze 5.5s ease-in-out infinite reverse;
+  transform-origin: bottom center;
+}
+
+.animate-birds-flock {
+  animation: birds-fly-across 42s linear infinite;
+}
+
+.animate-sunbeam-shift {
+  animation: sunbeam-pulse 9s ease-in-out infinite;
+}
+
+.animate-sun-rays {
+  animation: sun-rays-sweep 16s ease-in-out infinite;
+  transform-origin: top right;
+}
+
+.petal-item-1 { animation: petal-fall-1 14s linear infinite; }
+.petal-item-2 { animation: petal-fall-2 18s linear infinite; animation-delay: -3s; }
+.petal-item-3 { animation: petal-fall-1 16s linear infinite; animation-delay: -7s; }
+.petal-item-4 { animation: petal-fall-2 20s linear infinite; animation-delay: -11s; }
+.petal-item-5 { animation: petal-fall-1 15s linear infinite; animation-delay: -4s; }
+.petal-item-6 { animation: petal-fall-2 22s linear infinite; animation-delay: -9s; }
+.petal-item-7 { animation: petal-fall-1 17s linear infinite; animation-delay: -2s; }
+.petal-item-8 { animation: petal-fall-2 19s linear infinite; animation-delay: -13s; }
+
+/* Accessibility: Respect Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-cloud-slow,
+  .animate-cloud-alt,
+  .animate-fog-left,
+  .animate-fog-right,
+  .animate-tree-sway,
+  .animate-tree-sway-alt,
+  .animate-flower-breeze,
+  .animate-flower-breeze-alt,
+  .animate-birds-flock,
+  .animate-sunbeam-shift,
+  .animate-sun-rays,
+  .petal-item-1,
+  .petal-item-2,
+  .petal-item-3,
+  .petal-item-4,
+  .petal-item-5,
+  .petal-item-6,
+  .petal-item-7,
+  .petal-item-8 {
+    animation: none !important;
+  }
+}
+
+/* ========================================================
+   UIVERSE 3D FLIP CARD & INSTITUTIONAL TOGGLE SYSTEM
+   Tailored to refined academic navy and amber palette
+   ======================================================== */
+.uiverse-portal-wrapper {
+  --input-focus: #0F172A;
+  --font-color: #0F172A;
+  --font-color-sub: #64748B;
+  --bg-color: #F8FAFC;
+  --bg-color-alt: #F1F5F9;
+  --main-color: #0F172A;
+  --accent-gold: #D97706;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Role and Auth Mode Switch Controls */
+.uiverse-switch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 54px;
+  height: 24px;
+}
+
+.uiverse-toggle {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.uiverse-slider {
+  box-sizing: border-box;
+  border-radius: 9999px;
+  border: 1px solid #CBD5E1;
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #E2E8F0;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.uiverse-slider:before {
+  box-sizing: border-box;
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  border-radius: 9999px;
+  left: 3px;
+  bottom: 2px;
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.uiverse-toggle:checked + .uiverse-slider {
+  background-color: #0F172A;
+}
+
+.uiverse-toggle:checked + .uiverse-slider:before {
+  transform: translateX(28px);
+  background-color: #D97706;
+}
+
+/* 3D Flip Card Container */
+.uiverse-flip-card {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 440px;
+  min-height: 480px;
+}
+
+.uiverse-flip-card__inner {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  position: relative;
+  background-color: transparent;
+  perspective: 1200px;
+  text-align: center;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.uiverse-flip-card__inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.uiverse-flip-card__front,
+.uiverse-flip-card__back {
+  padding: 28px;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
+
+.uiverse-flip-card__back {
+  transform: rotateY(180deg);
+  background: #FFFFFF;
+}
+
+.uiverse-flip-card__input {
+  width: 100%;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid #CFE2D8;
+  background-color: #F8FAF8;
+  font-size: 14px;
+  font-weight: 500;
+  color: #17342B;
+  padding: 8px 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.uiverse-flip-card__input:focus {
+  border-color: #5A8A78;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(90, 138, 120, 0.18);
+}
+
+.uiverse-flip-card__input::placeholder {
+  color: #7A9E90;
+  opacity: 0.7;
+}
+
+.uiverse-flip-card__btn {
+  height: 46px;
+  border-radius: 8px;
+  border: none;
+  background-color: #244D40;
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(36, 77, 64, 0.2);
+}
+
+.uiverse-flip-card__btn:hover {
+  background-color: #D9A74A;
+  color: #132B24;
+  box-shadow: 0 4px 12px rgba(217, 167, 74, 0.35);
+}
+
+.uiverse-flip-card__btn:active {
+  transform: scale(0.99);
+}
+
+/* From Uiverse.io by JulanDeAlb - Scaled to Compact Small Size */ 
+.hamburger {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger input {
+  display: none;
+}
+
+.hamburger svg {
+  /* The size of the SVG defines the overall size - Compact small size */
+  height: 1.85em;
+  width: 1.85em;
+  /* Define the transition for transforming the SVG */
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.line {
+  fill: none;
+  stroke: white;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  /* Define the transition for transforming the Stroke */
+  transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+              stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.line-top-bottom {
+  stroke-dasharray: 12 63;
+}
+
+.hamburger input:checked + svg {
+  transform: rotate(-45deg);
+}
+
+.hamburger input:checked + svg .line-top-bottom {
+  stroke-dasharray: 20 300;
+  stroke-dashoffset: -32.42;
+}
+
+/* From Uiverse.io by AbanoubMagdy1 - Full Width Underline */ 
+.wave-group {
+  position: relative;
+  width: 100%;
+}
+
+.wave-group .input {
+  font-size: 16px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #515151;
+  background: transparent;
+  color: #111111;
+  box-sizing: border-box;
+}
+
+.wave-group .input:focus {
+  outline: none;
+}
+
+.wave-group .label {
+  color: #111;
+  font-size: 16px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  display: flex;
+}
+
+.wave-group .label-char {
+  transition: 0.2s ease all;
+  transition-delay: calc(var(--index) * .05s);
+}
+
+.wave-group .input:focus ~ label .label-char,
+.wave-group .input:valid ~ label .label-char {
+  transform: translateY(-20px);
+  font-size: 13px;
+  color: #008000;
+  font-weight: 600;
+}
+
+.wave-group .bar {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.wave-group .bar:before,.wave-group .bar:after {
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: #008000;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.wave-group .bar:before {
+  left: 50%;
+}
+
+.wave-group .bar:after {
+  right: 50%;
+}
+
+.wave-group .input:focus ~ .bar:before,
+.wave-group .input:focus ~ .bar:after {
+  width: 50%;
+}
+
+/* Dark / Header theme adaptation for wave-group */
+.wave-group--header .input {
+  color: #FFFFFF;
+  border-bottom: 1px solid rgba(250, 208, 44, 0.4);
+  font-size: 13px;
+  padding: 6px 6px 6px 4px;
+  width: 170px;
+}
+
+@media (min-width: 1024px) {
+  .wave-group--header .input {
+    width: 210px;
+  }
+  .wave-group--header .bar {
+    width: 210px;
+  }
+}
+
+.wave-group--header .label {
+  color: #A3C7B5;
+  font-size: 13px;
+  top: 6px;
+  left: 4px;
+}
+
+.wave-group--header .input:focus ~ label .label-char,
+.wave-group--header .input:valid ~ label .label-char {
+  transform: translateY(-16px);
+  font-size: 10px;
+  font-weight: 700;
+  color: #FAD02C;
+}
+
+.wave-group--header .bar {
+  width: 170px;
+}
+
+.wave-group--header .bar:before,
+.wave-group--header .bar:after {
+  background: #FAD02C;
+}
+
+/* Modal theme adaptation for wave-group */
+.wave-group--modal .input {
+  color: #FFFFFF;
+  border-bottom: 1px solid #21513F;
+  font-size: 15px;
+  padding: 8px 8px 8px 0;
+  width: 100%;
+}
+
+.wave-group--modal .bar {
+  width: 100%;
+}
+
+.wave-group--modal .label {
+  color: #8AAFA0;
+  font-size: 15px;
+  top: 8px;
+  left: 0;
+}
+
+.wave-group--modal .input:focus ~ label .label-char,
+.wave-group--modal .input:valid ~ label .label-char {
+  transform: translateY(-18px);
+  font-size: 11px;
+  font-weight: 700;
+  color: #FAD02C;
+}
+
+.wave-group--modal .bar:before,
+.wave-group--modal .bar:after {
+  background: #FAD02C;
+}
+
+/* ========================================================
+   FROSTED GLASS NAVIGATION DRAWER
+   Smooth, lightweight GPU-accelerated frosted glass
+   ======================================================== */
+.mirror-backdrop {
+  background: rgba(14, 38, 29, 0.96) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-top: 1px solid rgba(250, 208, 44, 0.3) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6) !important;
+  position: relative;
+}
+
+.mirror-pane {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+@keyframes menuEnterFast {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-menu-enter {
+  animation: menuEnterFast 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* ========================================================
+   UIVERSE.IO TEACHER PROFILE CARD (by andrew-demchenk0)
+   Adapted to CCNUST University Brand Colors
+   ======================================================== */
+.card,
+.teacher-profile-card,
+.uiverse-teacher-card,
+.teacher-card {
+  --main-color: #163A2D;
+  --submain-color: #4E7D68;
+  --bg-color: #FAF8F5;
+  --accent-color: #FAD02C;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  position: relative;
+  width: 300px;
+  height: 384px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px;
+  background: var(--bg-color);
+  border: 2px solid var(--main-color);
+  box-shadow: 0 4px 14px rgba(22, 58, 45, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.card:hover,
+.teacher-profile-card:hover,
+.uiverse-teacher-card:hover,
+.teacher-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-color);
+  box-shadow: 0 14px 26px rgba(22, 58, 45, 0.16);
+}
+
+.card .card__img,
+.teacher-profile-card .card__img,
+.uiverse-teacher-card .card__img,
+.teacher-card .card__img {
+  height: 192px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #163A2D 0%, #0F281E 100%);
+}
+
+.card .card__img svg,
+.teacher-profile-card .card__img svg,
+.uiverse-teacher-card .card__img svg,
+.teacher-card .card__img svg {
+  height: 100%;
+  width: 100%;
+  border-radius: 20px 20px 0 0;
+}
+
+.card .card__img img,
+.teacher-profile-card .card__img img,
+.uiverse-teacher-card .card__img img,
+.teacher-card .card__img img {
+  height: 100%;
+  width: 100%;
+  border-radius: 20px 20px 0 0;
+  object-fit: cover;
+}
+
+.card .card__avatar,
+.teacher-profile-card .card__avatar,
+.uiverse-teacher-card .card__avatar,
+.teacher-card .card__avatar {
+  position: absolute;
+  width: 114px;
+  height: 114px;
+  background: var(--bg-color);
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: calc(50% - 57px);
+  border: 3px solid var(--main-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.card:hover .card__avatar,
+.teacher-profile-card:hover .card__avatar,
+.uiverse-teacher-card:hover .card__avatar,
+.teacher-card:hover .card__avatar {
+  border-color: var(--accent-color);
+  transform: scale(1.03);
+}
+
+.card .card__avatar svg,
+.teacher-profile-card .card__avatar svg,
+.uiverse-teacher-card .card__avatar svg,
+.teacher-card .card__avatar svg {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+}
+
+.card .card__avatar img,
+.teacher-profile-card .card__avatar img,
+.uiverse-teacher-card .card__avatar img,
+.teacher-card .card__avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.card .card__title,
+.teacher-profile-card .card__title,
+.uiverse-teacher-card .card__title,
+.teacher-card .card__title {
+  margin-top: 60px;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--main-color);
+  text-align: center;
+  padding: 0 12px;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card .card__subtitle,
+.teacher-profile-card .card__subtitle,
+.uiverse-teacher-card .card__subtitle,
+.teacher-card .card__subtitle {
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--submain-color);
+  text-align: center;
+  padding: 0 12px;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card .card__dept,
+.teacher-profile-card .card__dept,
+.uiverse-teacher-card .card__dept,
+.teacher-card .card__dept {
+  font-size: 11px;
+  color: #64748B;
+  text-align: center;
+  margin-top: 2px;
+  padding: 0 12px;
+  max-width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card .card__wrapper,
+.card .card__btn-container,
+.teacher-profile-card .card__btn-container,
+.uiverse-teacher-card .card__actions,
+.teacher-card .card__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.card .card__btn,
+.teacher-profile-card .card__btn,
+.uiverse-teacher-card .card__btn,
+.teacher-card .card__btn {
+  margin-top: 0;
+  width: 76px;
+  height: 31px;
+  border: 2px solid var(--main-color);
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--main-color);
+  background: var(--bg-color);
+  text-transform: uppercase;
+  transition: all 0.3s;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.card .card__btn-solid,
+.teacher-profile-card .card__btn-solid,
+.uiverse-teacher-card .card__btn-solid,
+.teacher-card .card__btn-solid {
+  background: var(--main-color);
+  color: #FFFFFF;
+}
+
+.card .card__btn:hover,
+.teacher-profile-card .card__btn:hover,
+.uiverse-teacher-card .card__btn:hover,
+.teacher-card .card__btn:hover {
+  background: var(--accent-color);
+  border-color: var(--main-color);
+  color: var(--main-color);
+}
+
+.card .card__btn-solid:hover,
+.teacher-profile-card .card__btn-solid:hover,
+.uiverse-teacher-card .card__btn-solid:hover,
+.teacher-card .card__btn-solid:hover {
+  background: var(--accent-color);
+  color: var(--main-color);
+  border-color: var(--main-color);
+}
+
+/* ========================================================
+   Hero Action Buttons - Adapted from Uiverse.io Button Theme
+   - Smaller, round-full capsule geometry
+   - Apply Button: Brand Emerald Green with Halo Hover Effect
+   - Explore Button: Signature Yellow with Halo Hover Effect
+   ======================================================== */
+.uiverse-hover-btn-green {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 22px;
+  background: #133528;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  border: 2px solid rgba(250, 208, 44, 0.75);
+  border-radius: 9999px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.25;
+}
+
+@media (min-width: 640px) {
+  .uiverse-hover-btn-green {
+    padding: 10px 26px;
+    font-size: 14px;
+  }
+}
+
+.uiverse-hover-btn-green:hover {
+  background: #FFFFFF;
+  color: #10271E;
+  border-color: #FFFFFF;
+  box-shadow: 0 10px 24px rgba(255, 255, 255, 0.45);
+}
+
+.uiverse-hover-btn-yellow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 22px;
+  background: #FAD02C;
+  font-size: 13px;
+  font-weight: 800;
+  color: #10271E;
+  border: 2px solid #FAD02C;
+  border-radius: 9999px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.25;
+}
+
+@media (min-width: 640px) {
+  .uiverse-hover-btn-yellow {
+    padding: 10px 26px;
+    font-size: 14px;
+  }
+}
+
+.uiverse-hover-btn-yellow:hover {
+  background: #FFFFFF;
+  color: #10271E;
+  border-color: #FAD02C;
+  box-shadow: 0 10px 24px rgba(250, 208, 44, 0.65);
+}
+
+/* Backward compatibility for star button if called */
+.uiverse-star-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: #163A2D;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  border: 2px solid #163A2D;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 rgba(22, 58, 45, 0.4);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.uiverse-star-btn:hover {
+  background: transparent;
+  color: #163A2D;
+  box-shadow: 0 0 22px rgba(22, 58, 45, 0.38);
+}
+
+/* ========================================================
+   HIGH-CONTRAST "DEEP CHARCOAL" DARK THEME SYSTEM
+   Tailored to CCNUST Institutional Brand (Deep Charcoal + Gold + Emerald)
+   ======================================================== */
+html.dark,
+html.theme-charcoal {
+  color-scheme: dark;
+  background-color: #121417;
+  color: #F8FAFC;
+}
+
+html.dark body,
+html.theme-charcoal body {
+  background-color: #121417;
+  color: #F8FAFC;
+}
+
+/* Base surface overrides in Deep Charcoal mode */
+html.dark .bg-\[\#FAF8F5\],
+html.theme-charcoal .bg-\[\#FAF8F5\],
+html.dark .bg-\[\#F8FAF8\],
+html.theme-charcoal .bg-\[\#F8FAF8\],
+html.dark .bg-\[\#F8FAFC\],
+html.theme-charcoal .bg-\[\#F8FAFC\],
+html.dark .bg-\[\#F3EFE8\],
+html.theme-charcoal .bg-\[\#F3EFE8\],
+html.dark .bg-\[\#F2F7F4\],
+html.theme-charcoal .bg-\[\#F2F7F4\],
+html.dark .bg-\[\#E8F1EB\],
+html.theme-charcoal .bg-\[\#E8F1EB\],
+html.dark .bg-\[\#E9F2EC\],
+html.theme-charcoal .bg-\[\#E9F2EC\] {
+  background-color: #121417 !important;
+}
+
+/* Elevated containers, cards and white surfaces */
+html.dark .bg-white,
+html.theme-charcoal .bg-white,
+html.dark .bg-\[\#FAFDFB\],
+html.theme-charcoal .bg-\[\#FAFDFB\] {
+  background-color: #1C2128 !important;
+  color: #F8FAFC;
+}
+
+/* Slate and subtle muted light panels become elevated dark charcoal */
+html.dark .bg-slate-50,
+html.theme-charcoal .bg-slate-50,
+html.dark .bg-gray-50,
+html.theme-charcoal .bg-gray-50,
+html.dark .bg-slate-100,
+html.theme-charcoal .bg-slate-100,
+html.dark .bg-gray-100,
+html.theme-charcoal .bg-gray-100 {
+  background-color: #171B22 !important;
+}
+
+/* Sage & subtle emerald pastels adapt to dark forest tone */
+html.dark .bg-\[\#EAF2ED\],
+html.theme-charcoal .bg-\[\#EAF2ED\],
+html.dark .bg-\[\#EFF6F2\],
+html.theme-charcoal .bg-\[\#EFF6F2\],
+html.dark .bg-\[\#F3F8F5\],
+html.theme-charcoal .bg-\[\#F3F8F5\] {
+  background-color: #152A20 !important;
+  color: #34D399 !important;
+}
+
+/* Primary Headings and High-Contrast Typography */
+html.dark .text-slate-900,
+html.theme-charcoal .text-slate-900,
+html.dark .text-slate-800,
+html.theme-charcoal .text-slate-800,
+html.dark .text-gray-900,
+html.theme-charcoal .text-gray-900,
+html.dark .text-gray-800,
+html.theme-charcoal .text-gray-800,
+html.dark .text-\[\#102B21\],
+html.theme-charcoal .text-\[\#102B21\],
+html.dark .text-\[\#0D241C\],
+html.theme-charcoal .text-\[\#0D241C\],
+html.dark .text-\[\#17342B\],
+html.theme-charcoal .text-\[\#17342B\],
+html.dark .text-\[\#1E293B\],
+html.theme-charcoal .text-\[\#1E293B\] {
+  color: #F8FAFC !important;
+}
+
+html.dark .text-slate-700,
+html.theme-charcoal .text-slate-700,
+html.dark .text-slate-600,
+html.theme-charcoal .text-slate-600,
+html.dark .text-gray-700,
+html.theme-charcoal .text-gray-700,
+html.dark .text-gray-600,
+html.theme-charcoal .text-gray-600,
+html.dark .text-\[\#4A6E60\],
+html.theme-charcoal .text-\[\#4A6E60\] {
+  color: #CBD5E1 !important;
+}
+
+html.dark .text-slate-500,
+html.theme-charcoal .text-slate-500,
+html.dark .text-gray-500,
+html.theme-charcoal .text-gray-500,
+html.dark .text-\[\#5A8A78\],
+html.theme-charcoal .text-\[\#5A8A78\] {
+  color: #94A3B8 !important;
+}
+
+/* High contrast emerald for university green elements that were dark text */
+html.dark .text-\[\#163A2D\],
+html.theme-charcoal .text-\[\#163A2D\] {
+  color: #34D399 !important;
+}
+
+/* High contrast borders */
+html.dark .border-slate-200,
+html.theme-charcoal .border-slate-200,
+html.dark .border-slate-100,
+html.theme-charcoal .border-slate-100,
+html.dark .border-slate-300,
+html.theme-charcoal .border-slate-300,
+html.dark .border-gray-200,
+html.theme-charcoal .border-gray-200,
+html.dark .border-\[\#E8E2D8\],
+html.theme-charcoal .border-\[\#E8E2D8\],
+html.dark .border-\[\#D0E4DA\],
+html.theme-charcoal .border-\[\#D0E4DA\],
+html.dark .border-\[\#DCEBE3\],
+html.theme-charcoal .border-\[\#DCEBE3\],
+html.dark .border-\[\#CFE2D8\],
+html.theme-charcoal .border-\[\#CFE2D8\] {
+  border-color: #2D3748 !important;
+}
+
+/* Forest green border lines adapt into architectural contrast borders */
+html.dark .border-\[\#163A2D\],
+html.theme-charcoal .border-\[\#163A2D\] {
+  border-color: #2D3748 !important;
+}
+
+/* 3D Flip Card adaptation in dark mode */
+html.dark .uiverse-flip-card__front,
+html.theme-charcoal .uiverse-flip-card__front,
+html.dark .uiverse-flip-card__back,
+html.theme-charcoal .uiverse-flip-card__back {
+  background: #1C2128 !important;
+  border-color: #2D3748 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark .uiverse-flip-card__input,
+html.theme-charcoal .uiverse-flip-card__input {
+  background-color: #161B22 !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+
+/* Faculty & Teacher Profile Cards */
+html.dark .card,
+html.theme-charcoal .card,
+html.dark .card-profile,
+html.theme-charcoal .card-profile,
+html.dark .teacher-card,
+html.theme-charcoal .teacher-card,
+html.dark .teacher-profile-card,
+html.theme-charcoal .teacher-profile-card,
+html.dark .uiverse-teacher-card,
+html.theme-charcoal .uiverse-teacher-card {
+  background: #1C2128 !important;
+  border-color: #2D3748 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark .card .card__avatar,
+html.theme-charcoal .card .card__avatar,
+html.dark .teacher-card .card__avatar,
+html.theme-charcoal .teacher-card .card__avatar {
+  background: #1C2128 !important;
+  border-color: #FAD02C !important;
+}
+
+html.dark .card .card__title,
+html.theme-charcoal .card .card__title,
+html.dark .teacher-card .card__title,
+html.theme-charcoal .teacher-card .card__title,
+html.dark .prof-name,
+html.theme-charcoal .prof-name {
+  color: #F8FAFC !important;
+}
+
+html.dark .card .card__subtitle,
+html.theme-charcoal .card .card__subtitle,
+html.dark .teacher-card .card__subtitle,
+html.theme-charcoal .teacher-card .card__subtitle {
+  color: #94A3B8 !important;
+}
+
+html.dark .card .card__btn,
+html.theme-charcoal .card .card__btn,
+html.dark .teacher-card .card__btn,
+html.theme-charcoal .teacher-card .card__btn {
+  background: #161B22 !important;
+  border-color: #FAD02C !important;
+  color: #FAD02C !important;
+}
+
+html.dark .card .card__btn:hover,
+html.theme-charcoal .card .card__btn:hover,
+html.dark .teacher-card .card__btn:hover,
+html.theme-charcoal .teacher-card .card__btn:hover {
+  background: #FAD02C !important;
+  color: #121417 !important;
+}
+
+html.dark .prof-stats,
+html.theme-charcoal .prof-stats {
+  border-color: #2D3748 !important;
+}
+
+html.dark .pstat,
+html.theme-charcoal .pstat {
+  background: #161B22 !important;
+  border-color: #2D3748 !important;
+}
+
+html.dark .pstat .psv,
+html.theme-charcoal .pstat .psv {
+  color: #F8FAFC !important;
+}
+
+/* Secondary Swiss buttons */
+html.dark .btn-swiss-secondary,
+html.theme-charcoal .btn-swiss-secondary {
+  border-color: #FAD02C !important;
+  color: #FAD02C !important;
+}
+
+html.dark .btn-swiss-secondary:hover,
+html.theme-charcoal .btn-swiss-secondary:hover {
+  background-color: #FAD02C !important;
+  color: #121417 !important;
+}
+
+/* Form Controls & Inputs */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([class*="wave-group"]),
+html.theme-charcoal input:not([type="checkbox"]):not([type="radio"]):not([class*="wave-group"]),
+html.dark select,
+html.theme-charcoal select,
+html.dark textarea,
+html.theme-charcoal textarea {
+  background-color: #161B22 !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+
+/* Background Grids in Dark Mode */
+html.dark .swiss-grid-pattern,
+html.theme-charcoal .swiss-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px) !important;
+}
+
+html.dark .swiss-dots,
+html.theme-charcoal .swiss-dots {
+  background-image: radial-gradient(rgba(250, 208, 44, 0.15) 1.2px, transparent 1.2px) !important;
+}
+
+/* Dark Mode Scrollbars */
+html.dark ::-webkit-scrollbar-track,
+html.theme-charcoal ::-webkit-scrollbar-track {
+  background: #121417;
+}
+
+html.dark ::-webkit-scrollbar-thumb,
+html.theme-charcoal ::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover,
+html.theme-charcoal ::-webkit-scrollbar-thumb:hover {
+  background: #FAD02C;
+}
+
+/* ========================================================
+   MODERN AMBIENT GRADIENTS, CONIC GLOW CARDS & MOTION
+   Inspired by contemporary tech showcase aesthetics,
+   tuned exclusively to CCNUST Forest Emerald & Gold
+   ======================================================== */
+@property --ccn-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes ccnGlowRotate {
+  to {
+    --ccn-angle: 360deg;
+  }
+}
+
+@keyframes ccnAuraDrift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(28px, -18px, 0) scale(1.06);
+  }
+}
+
+@keyframes ccnAuraDriftReverse {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-24px, 20px, 0) scale(1.05);
+  }
+}
+
+@keyframes ccnHeroFadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.ccn-hero-fade {
+  animation: ccnHeroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ccn-hero-fade-delay-1 {
+  animation-delay: 80ms;
+}
+
+.ccn-hero-fade-delay-2 {
+  animation-delay: 150ms;
+}
+
+.ccn-hero-fade-delay-3 {
+  animation-delay: 220ms;
+}
+
+.ccn-animate-drift {
+  animation: ccnAuraDrift 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.ccn-animate-drift-reverse {
+  animation: ccnAuraDriftReverse 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Multi-layer breathing ambient aura for Home Canvas */
+.ccn-aura-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ccn-aura-orb-1 {
+  position: absolute;
+  top: -12%;
+  left: -8%;
+  width: 44rem;
+  height: 44rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(78, 125, 104, 0.16) 0%, rgba(22, 58, 45, 0.04) 48%, transparent 72%);
+  filter: blur(60px);
+}
+
+.ccn-aura-orb-2 {
+  position: absolute;
+  top: 28%;
+  right: -10%;
+  width: 38rem;
+  height: 38rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(250, 208, 44, 0.12) 0%, rgba(78, 125, 104, 0.05) 52%, transparent 74%);
+  filter: blur(70px);
+}
+
+.ccn-aura-orb-3 {
+  position: absolute;
+  bottom: -10%;
+  left: 22%;
+  width: 46rem;
+  height: 36rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(22, 58, 45, 0.12) 0%, rgba(78, 125, 104, 0.05) 50%, transparent 74%);
+  filter: blur(65px);
+}
+
+/* Masked hairline architectural grid */
+.ccn-bg-grid-masked {
+  background-size: 36px 36px;
+  background-image:
+    linear-gradient(to right, rgba(22, 58, 45, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22, 58, 45, 0.055) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 42%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 42%, #000 35%, transparent 100%);
+}
+
+.ccn-bg-grid-dark-masked {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 32% 45%, #000 20%, transparent 90%);
+  mask-image: radial-gradient(ellipse 75% 65% at 32% 45%, #000 20%, transparent 90%);
+}
+
+/* Gradient Headlines */
+.ccn-text-gradient-light {
+  color: transparent;
+  background: linear-gradient(120deg, #FFFFFF 0%, #FEF08A 46%, #FAD02C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.ccn-text-gradient-dark {
+  color: transparent;
+  background: linear-gradient(125deg, #0D241C 0%, #163A2D 52%, #2F7A5C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Rotating Conic Border Glow Card */
+.ccn-glow-card {
+  position: relative;
+  isolation: isolate;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease;
+}
+
+.ccn-glow-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--ccn-angle),
+    transparent 0deg 210deg,
+    #163A2D 255deg,
+    #FAD02C 305deg,
+    #3B8263 345deg,
+    transparent 360deg
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.ccn-glow-card:hover,
+.ccn-glow-card:focus-within {
+  transform: translate3d(0, -3px, 0);
+  box-shadow: 0 1px 2px rgba(16, 43, 33, 0.05), 0 18px 36px -16px rgba(22, 58, 45, 0.22);
+}
+
+.ccn-glow-card:hover::before,
+.ccn-glow-card:focus-within::before {
+  opacity: 1;
+  animation: 5s linear infinite ccnGlowRotate;
+}
+
+/* GPU-Composited Scroll Reveal */
+.ccn-reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.ccn-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ccn-hero-fade,
+  .ccn-animate-drift,
+  .ccn-animate-drift-reverse,
+  .ccn-glow-card:hover::before,
+  .ccn-glow-card:focus-within::before {
+    animation: none !important;
+  }
+  .ccn-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
